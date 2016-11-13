@@ -24,7 +24,10 @@
     "StyleCop.Analyzers": {
       "version": "1.0.0",
       "type": "build"
-    }
+    },
+    "Microsoft.Data.Sqlite": "1.0.0",
+    "Dapper": "1.50.2",
+    "Usa.Smart.Resolver": "1.0.4"
   },
 
   "tools": {
