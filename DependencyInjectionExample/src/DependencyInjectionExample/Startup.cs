@@ -75,11 +75,11 @@
             //    .ToSelf()
             //    .InRequestScope();
 
-            PrepareMasterDatabase(connectionStringMaster);
-            PrepareCharacterDatabase(connectionStringCharacter);
+            SetupMasterDatabase(connectionStringMaster);
+            SetupCharacterDatabase(connectionStringCharacter);
         }
 
-        private static void PrepareMasterDatabase(string connectionString)
+        private static void SetupMasterDatabase(string connectionString)
         {
             using (var con = new SqliteConnection(connectionString))
             {
@@ -91,7 +91,7 @@
             }
         }
 
-        private static void PrepareCharacterDatabase(string connectionString)
+        private static void SetupCharacterDatabase(string connectionString)
         {
             using (var con = new SqliteConnection(connectionString))
             {
