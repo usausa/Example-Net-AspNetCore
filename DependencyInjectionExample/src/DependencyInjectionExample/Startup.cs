@@ -9,6 +9,7 @@
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc.Controllers;
+    using Microsoft.AspNetCore.Mvc.ViewComponents;
     using Microsoft.Data.Sqlite;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -36,9 +37,10 @@
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddSingleton<IControllerActivator>(new SmartResolverControllerActivator(resolver));
-
             services.AddMvc();
+
+            services.AddSingleton<IControllerActivator>(new SmartResolverControllerActivator(resolver));
+            services.AddSingleton<IViewComponentActivator>(new SmartResolverViewComponentActivator(resolver));
 
             // Add application services.
             var connectionStringMaster = Configuration.GetValue<string>("ConnectionString:Master");
