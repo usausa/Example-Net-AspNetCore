@@ -8,6 +8,7 @@
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc.Controllers;
     using Microsoft.AspNetCore.Mvc.ViewComponents;
     using Microsoft.Data.Sqlite;
@@ -39,6 +40,9 @@
             // Add framework services.
             services.AddMvc();
 
+            // UseSmartResolverRequestScope need IHttpContextAccessor
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             services.AddSingleton<IControllerActivator>(new SmartResolverControllerActivator(resolver));
             services.AddSingleton<IViewComponentActivator>(new SmartResolverViewComponentActivator(resolver));
 
@@ -64,6 +68,12 @@
                 .ToSelf()
                 .InSingletonScope()
                 .WithConstructorArgument("connectionFactory", kernel => kernel.Get<IConnectionFactory>("Character"));
+
+            //// Request scope sample
+            //resolver
+            //    .Bind<ScopedObject>()
+            //    .ToSelf()
+            //    .InRequestScope();
 
             PrepareMasterDatabase(connectionStringMaster);
             PrepareCharacterDatabase(connectionStringCharacter);
@@ -111,6 +121,10 @@
 
             app.UseStaticFiles();
 
+            // Enable Smart.Resolver request scope, Placed before UseMvc
+            app.UseSmartResolverRequestScope(resolver);
+
+            // Enable request scope
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
