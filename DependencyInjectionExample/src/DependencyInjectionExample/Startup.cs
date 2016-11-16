@@ -47,12 +47,12 @@
             services.AddSingleton<IViewComponentActivator>(new SmartResolverViewComponentActivator(resolver));
 
             // Add application services.
-            var connectionStringMaster = Configuration.GetValue<string>("ConnectionString:Master");
+            var connectionStringMaster = Configuration.GetConnectionString("Master");
             resolver
                 .Bind<IConnectionFactory>()
                 .ToConstant(new CallbackConnectionFactory(() => new SqliteConnection(connectionStringMaster)))
                 .Named("Master");
-            var connectionStringCharacter = Configuration.GetValue<string>("ConnectionString:Character");
+            var connectionStringCharacter = Configuration.GetConnectionString("Character");
             resolver
                 .Bind<IConnectionFactory>()
                 .ToConstant(new CallbackConnectionFactory(() => new SqliteConnection(connectionStringCharacter)))
