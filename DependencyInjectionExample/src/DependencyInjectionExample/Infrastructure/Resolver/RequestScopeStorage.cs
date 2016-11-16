@@ -25,7 +25,7 @@
 
             object value;
             context.Items.TryGetValue(StorageKey, out value);
-            Dictionary<IBinding, object> dictionary = (Dictionary<IBinding, object>)value;
+            var dictionary = (Dictionary<IBinding, object>)value;
             if (dictionary == null)
             {
                 dictionary = new Dictionary<IBinding, object>();
@@ -41,7 +41,7 @@
 
             object value;
             context.Items.TryGetValue(StorageKey, out value);
-            Dictionary<IBinding, object> dictionary = (Dictionary<IBinding, object>)value;
+            var dictionary = (Dictionary<IBinding, object>)value;
             if (dictionary == null)
             {
                 return null;
@@ -57,7 +57,7 @@
 
             object value;
             context.Items.TryGetValue(StorageKey, out value);
-            Dictionary<IBinding, object> dictionary = (Dictionary<IBinding, object>)value;
+            var dictionary = (Dictionary<IBinding, object>)value;
             if (dictionary == null)
             {
                 return;
