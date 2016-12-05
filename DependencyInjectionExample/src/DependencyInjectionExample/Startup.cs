@@ -1,5 +1,7 @@
 ﻿namespace DependencyInjectionExample
 {
+    using System;
+
     using Dapper;
 
     using DependencyInjectionExample.Infrastructure.Data;
@@ -35,16 +37,14 @@
         public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
             services.AddMvc();
 
             services.AddSwaggerGen();
 
-            // UseSmartResolverRequestScope need IHttpContextAccessor
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
+            // Replace activator.
             services.AddSingleton<IControllerActivator>(new SmartResolverControllerActivator(resolver));
             services.AddSingleton<IViewComponentActivator>(new SmartResolverViewComponentActivator(resolver));
 
@@ -71,14 +71,11 @@
                 .InSingletonScope()
                 .WithConstructorArgument("connectionFactory", kernel => kernel.Get<IConnectionFactory>("Character"));
 
-            //// Request scope sample
-            //resolver
-            //    .Bind<ScopedObject>()
-            //    .ToSelf()
-            //    .InRequestScope();
-
             SetupMasterDatabase(connectionStringMaster);
             SetupCharacterDatabase(connectionStringCharacter);
+
+            // Use custom service provider.
+            return SmartResolverHelper.BuildServiceProvider(resolver, services);
         }
 
         private static void SetupMasterDatabase(string connectionString)
@@ -122,9 +119,6 @@
             }
 
             app.UseStaticFiles();
-
-            // Enable Smart.Resolver request scope, Placed before UseMvc
-            app.UseSmartResolverRequestScope(resolver);
 
             // Enable request scope
             app.UseMvc(routes =>

@@ -7,7 +7,7 @@
     {
         public IScopeStorage GetStorage(IKernel kernel)
         {
-            return kernel.Components.Get<RequestScopeStorage>();
+            return kernel.Get<RequestScopeStorage>();
         }
     }
 }

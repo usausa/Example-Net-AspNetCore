@@ -2,7 +2,6 @@
   "dependencies": {
     "Microsoft.NETCore.App": {
       "version": "1.1.0",
-
       "type": "platform"
     },
     "Microsoft.AspNetCore.Diagnostics": "1.1.0",
@@ -29,7 +28,7 @@
     },
     "Dapper": "1.50.2",
     "Swashbuckle": "6.0.0-beta902",
-    "Usa.Smart.Resolver": "1.0.5"
+    "Usa.Smart.Resolver": "1.1.1"
   },
 
   "tools": {
