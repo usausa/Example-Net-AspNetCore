@@ -1,6 +1,11 @@
 ﻿@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment Env
 @inject DependencyInjectionExample.Services.CharacterService CharacterService
+@{
+    ViewData["Title"] = "View Injection";
+}
+
 <h2>Environment</h2>
 <div>@Env.EnvironmentName</div>
+
 <h2>User Service</h2>
 <div>@CharacterService.QueryCharacterList().Count</div>

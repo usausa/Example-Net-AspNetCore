@@ -10,7 +10,6 @@
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc.Controllers;
     using Microsoft.AspNetCore.Mvc.ViewComponents;
     using Microsoft.Data.Sqlite;
@@ -49,6 +48,14 @@
             services.AddSingleton<IViewComponentActivator>(new SmartResolverViewComponentActivator(resolver));
 
             // Add application services.
+            SetupComponents();
+
+            // Use custom service provider.
+            return SmartResolverHelper.BuildServiceProvider(resolver, services);
+        }
+
+        private void SetupComponents()
+        {
             var connectionStringMaster = Configuration.GetConnectionString("Master");
             resolver
                 .Bind<IConnectionFactory>()
@@ -71,11 +78,14 @@
                 .InSingletonScope()
                 .WithConstructorArgument("connectionFactory", kernel => kernel.Get<IConnectionFactory>("Character"));
 
+            resolver
+                .Bind<ScopedObject>()
+                .ToSelf()
+                .InRequestScope();
+
+            // Prepare daabase
             SetupMasterDatabase(connectionStringMaster);
             SetupCharacterDatabase(connectionStringCharacter);
-
-            // Use custom service provider.
-            return SmartResolverHelper.BuildServiceProvider(resolver, services);
         }
 
         private static void SetupMasterDatabase(string connectionString)
