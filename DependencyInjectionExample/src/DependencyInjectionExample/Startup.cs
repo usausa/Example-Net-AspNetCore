@@ -7,6 +7,7 @@
     using DependencyInjectionExample.Infrastructure.Data;
     using DependencyInjectionExample.Infrastructure.Resolver;
     using DependencyInjectionExample.Services;
+    using DependencyInjectionExample.Settings;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -47,11 +48,21 @@
             services.AddSingleton<IControllerActivator>(new SmartResolverControllerActivator(resolver));
             services.AddSingleton<IViewComponentActivator>(new SmartResolverViewComponentActivator(resolver));
 
+            // Settings
+            ConfigureSettings(services);
+
             // Add application services.
             SetupComponents();
 
             // Use custom service provider.
             return SmartResolverHelper.BuildServiceProvider(resolver, services);
+        }
+
+        private void ConfigureSettings(IServiceCollection services)
+        {
+            services.AddOptions();
+
+            services.Configure<ProfileSettings>(Configuration.GetSection("ProfileSettings"));
         }
 
         private void SetupComponents()
@@ -77,6 +88,11 @@
                 .ToSelf()
                 .InSingletonScope()
                 .WithConstructorArgument("connectionFactory", kernel => kernel.Get<IConnectionFactory>("Character"));
+
+            resolver
+                .Bind<MetricsManager>()
+                .ToSelf()
+                .InSingletonScope();
 
             resolver
                 .Bind<ScopedObject>()

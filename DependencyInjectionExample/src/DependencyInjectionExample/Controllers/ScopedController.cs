@@ -1,8 +1,9 @@
-﻿using System;
-using DependencyInjectionExample.Services;
-
-namespace DependencyInjectionExample.Controllers
+﻿namespace DependencyInjectionExample.Controllers
 {
+    using System;
+
+    using DependencyInjectionExample.Services;
+
     using Microsoft.AspNetCore.Mvc;
 
     public class ScopedController : Controller
