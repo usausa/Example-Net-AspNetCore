@@ -1,6 +1,6 @@
 ﻿namespace DependencyInjectionExample.Controllers
 {
-    using DependencyInjectionExample.Infrastructure.Mvc;
+    using DependencyInjectionExample.Infrastructure.Web;
     using DependencyInjectionExample.Services;
 
     using Microsoft.AspNetCore.Mvc;

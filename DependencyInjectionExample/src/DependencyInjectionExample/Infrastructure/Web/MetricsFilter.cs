@@ -1,4 +1,4 @@
-﻿namespace DependencyInjectionExample.Infrastructure.Mvc
+﻿namespace DependencyInjectionExample.Infrastructure.Web
 {
     using DependencyInjectionExample.Services;
 
