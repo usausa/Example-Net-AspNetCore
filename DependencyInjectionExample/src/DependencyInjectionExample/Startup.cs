@@ -20,9 +20,14 @@
 
     using Smart.Resolver;
 
-    public class Startup
+    public sealed class Startup : IDisposable
     {
         private readonly StandardResolver resolver = new StandardResolver();
+
+        public void Dispose()
+        {
+            resolver.Dispose();
+        }
 
         public Startup(IHostingEnvironment env)
         {

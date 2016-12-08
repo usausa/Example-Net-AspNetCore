@@ -1,10 +1,13 @@
 ﻿namespace DependencyInjectionExample.Infrastructure.Web
 {
+    using System;
+
     using DependencyInjectionExample.Services;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Filters;
 
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class MetricsFilterAttribute : TypeFilterAttribute
     {
         public MetricsFilterAttribute()
