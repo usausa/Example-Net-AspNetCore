@@ -20,15 +20,8 @@
 
     using Smart.Resolver;
 
-    public sealed class Startup : IDisposable
+    public sealed class Startup
     {
-        private readonly StandardResolver resolver = new StandardResolver();
-
-        public void Dispose()
-        {
-            resolver.Dispose();
-        }
-
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -50,17 +43,18 @@
             services.AddSwaggerGen();
 
             // Replace activator.
-            services.AddSingleton<IControllerActivator>(new SmartResolverControllerActivator(resolver));
-            services.AddSingleton<IViewComponentActivator>(new SmartResolverViewComponentActivator(resolver));
+            services.AddSingleton<IControllerActivator, SmartResolverControllerActivator>();
+            services.AddSingleton<IViewComponentActivator, SmartResolverViewComponentActivator>();
 
             // Settings
             ConfigureSettings(services);
 
             // Add application services.
-            SetupComponents();
+            var config = new ResolverConfig();
+            SetupComponents(config);
 
             // Use custom service provider.
-            return SmartResolverHelper.BuildServiceProvider(resolver, services);
+            return SmartResolverHelper.BuildServiceProvider(config, services);
         }
 
         private void ConfigureSettings(IServiceCollection services)
@@ -70,36 +64,36 @@
             services.Configure<ProfileSettings>(Configuration.GetSection("ProfileSettings"));
         }
 
-        private void SetupComponents()
+        private void SetupComponents(ResolverConfig config)
         {
             var connectionStringMaster = Configuration.GetConnectionString("Master");
-            resolver
+            config
                 .Bind<IConnectionFactory>()
                 .ToConstant(new CallbackConnectionFactory(() => new SqliteConnection(connectionStringMaster)))
                 .Named("Master");
             var connectionStringCharacter = Configuration.GetConnectionString("Character");
-            resolver
+            config
                 .Bind<IConnectionFactory>()
                 .ToConstant(new CallbackConnectionFactory(() => new SqliteConnection(connectionStringCharacter)))
                 .Named("Character");
 
-            resolver
+            config
                 .Bind<MasterService>()
                 .ToSelf()
                 .InSingletonScope()
                 .WithConstructorArgument("connectionFactory", kernel => kernel.Get<IConnectionFactory>("Master"));
-            resolver
+            config
                 .Bind<CharacterService>()
                 .ToSelf()
                 .InSingletonScope()
                 .WithConstructorArgument("connectionFactory", kernel => kernel.Get<IConnectionFactory>("Character"));
 
-            resolver
+            config
                 .Bind<MetricsManager>()
                 .ToSelf()
                 .InSingletonScope();
 
-            resolver
+            config
                 .Bind<ScopedObject>()
                 .ToSelf()
                 .InRequestScope();
