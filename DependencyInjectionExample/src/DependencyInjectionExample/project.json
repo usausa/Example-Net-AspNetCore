@@ -31,8 +31,7 @@
     },
     "Dapper": "1.50.2",
     "Swashbuckle": "6.0.0-beta902",
-    "Usa.Smart.Resolver": "1.2.1"
-  },
+    "Usa.Smart.Resolver": "1.2.2"  },
 
   "tools": {
     "BundlerMinifier.Core": "2.2.306",
