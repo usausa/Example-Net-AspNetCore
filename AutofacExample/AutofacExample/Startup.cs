@@ -3,6 +3,7 @@
     using System;
 
     using Autofac;
+    using Autofac.Configuration;
     using Autofac.Extensions.DependencyInjection;
 
     using Microsoft.AspNetCore.Builder;
@@ -15,6 +16,8 @@
     {
         public IConfigurationRoot Configuration { get; }
 
+        private readonly ConfigurationModule module;
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -23,6 +26,12 @@
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            var config = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("components.json", optional: true)
+                .AddJsonFile($"components.{env.EnvironmentName}.json", optional: true);
+            module = new ConfigurationModule(config.Build());
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -31,8 +40,10 @@
             // Add framework services.
             services.AddMvc();
 
+            // Autofac
             var builder = new ContainerBuilder();
             builder.Populate(services);
+            builder.RegisterModule(module);
             var container = builder.Build();
 
             return new AutofacServiceProvider(container);

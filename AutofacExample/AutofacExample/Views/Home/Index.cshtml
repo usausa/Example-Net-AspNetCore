@@ -1,3 +1,6 @@
-﻿@{
+﻿@inject AutofacExample.Services.IService Service
+@{
     ViewData["Title"] = "Home Page";
 }
+
+<h1>@Service.Name</h1>

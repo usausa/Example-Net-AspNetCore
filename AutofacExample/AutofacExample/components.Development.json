@@ -1,0 +1,9 @@
+﻿{
+  "defaultAssembly": "AutofacExample",
+  "components": [
+    {
+      "type": "AutofacExample.Services.DevelopmentService",
+      "services": [ { "type": "AutofacExample.Services.IService" } ]
+    }
+  ]
+}
