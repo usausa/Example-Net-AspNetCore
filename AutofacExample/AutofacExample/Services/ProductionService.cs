@@ -7,13 +7,13 @@
 
     public class ProductionService : IService
     {
-        private readonly byte[] key;
+        private readonly byte[] token;
 
-        public string Name => $"Production({BitConverter.ToString(key)})";
+        public string Name => $"Production({BitConverter.ToString(token)})";
 
-        public ProductionService([TypeConverter(typeof(HexStringConverter))] byte[] key)
+        public ProductionService([TypeConverter(typeof(HexStringConverter))] byte[] token)
         {
-            this.key = key;
+            this.token = token;
         }
     }
 }
