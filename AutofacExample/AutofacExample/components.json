@@ -3,7 +3,10 @@
   "components": [
     {
       "type": "AutofacExample.Services.ProductionService",
-      "services": [ { "type": "AutofacExample.Services.IService" } ]
+      "services": [ { "type": "AutofacExample.Services.IService" } ],
+      "parameters": {
+        "key": "0123456789ABCDEF"
+      }
     }
   ]
 }
