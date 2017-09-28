@@ -1,11 +1,9 @@
-﻿namespace DependencyInjectionExample.Infrastructure.Resolver
+﻿namespace Smart.Resolver
 {
     using System;
 
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Controllers;
-
-    using Smart.Resolver;
 
     public class SmartResolverControllerActivator : IControllerActivator
     {

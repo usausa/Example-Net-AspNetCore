@@ -1,24 +1,41 @@
-﻿namespace DependencyInjectionExample.Infrastructure.Resolver
+﻿namespace Smart.Resolver
 {
+    using System;
     using System.Threading;
 
-    using Smart.Resolver;
+    using Microsoft.AspNetCore.Http;
+
+    using Smart.ComponentModel;
+    using Smart.Resolver.Bindings;
     using Smart.Resolver.Scopes;
 
     public class RequestScope : IScope
     {
-        private volatile RequestScopeStorage storage;
+        private readonly object sync = new object();
 
-        public IScopeStorage GetStorage(IKernel kernel)
+        private IHttpContextAccessor accessor;
+
+        public IScope Copy(IComponentContainer components)
         {
-            if (storage == null)
+            return this;
+        }
+
+        public object GetOrAdd(IKernel kernel, IBinding binding, Func<IBinding, object> factory)
+        {
+            if (accessor == null)
             {
-#pragma warning disable 420
-                Interlocked.CompareExchange(ref storage, kernel.Get<RequestScopeStorage>(), null);
-#pragma warning restore 420
+                lock (sync)
+                {
+                    if (accessor == null)
+                    {
+                        var httpContextAccessor = kernel.Get<IHttpContextAccessor>();
+                        Interlocked.MemoryBarrier();
+                        accessor = httpContextAccessor;
+                    }
+                }
             }
 
-            return storage;
+            return HttpContextStorage.GetOrAdd(accessor.HttpContext, binding, factory);
         }
     }
 }

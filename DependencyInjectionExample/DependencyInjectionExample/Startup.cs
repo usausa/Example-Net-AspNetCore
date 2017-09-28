@@ -4,8 +4,6 @@
 
     using Dapper;
 
-    using DependencyInjectionExample.Infrastructure.Data;
-    using DependencyInjectionExample.Infrastructure.Resolver;
     using DependencyInjectionExample.Services;
     using DependencyInjectionExample.Settings;
 
@@ -16,41 +14,36 @@
     using Microsoft.Data.Sqlite;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Logging;
 
+    using Smart.Data;
     using Smart.Resolver;
 
     using Swashbuckle.AspNetCore.Swagger;
 
     public class Startup
     {
-        public IConfigurationRoot Configuration { get; }
+        public IConfiguration Configuration { get; }
 
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
+            Configuration = configuration;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
             services.AddMvc();
 
+            // Swagger
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("assistance", new Info { Title = "Example API", Version = "v1" });
+                options.SwaggerDoc("application", new Info { Title = "Application API", Version = "v1" });
                 options.DescribeAllEnumsAsStrings();    // Enum
             });
 
             // Replace activator.
             services.AddSingleton<IControllerActivator, SmartResolverControllerActivator>();
-            services.AddSingleton<IViewComponentActivator, SmartResolverViewComponentActivator>();
+            //services.AddSingleton<IViewComponentActivator, SmartResolverViewComponentActivator>();
 
             // Settings
             ConfigureSettings(services);
@@ -134,11 +127,8 @@
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -146,7 +136,7 @@
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/error");
             }
 
             app.UseStaticFiles();
@@ -158,11 +148,15 @@
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            app.UseSwagger();
-            app.UseSwaggerUI(options =>
+            // Swagger
+            //if (env.IsDevelopment())
             {
-                options.SwaggerEndpoint("/swagger/assistance/swagger.json", "Example API");
-            });
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/application/swagger.json", "Application API");
+                });
+            }
         }
     }
 }

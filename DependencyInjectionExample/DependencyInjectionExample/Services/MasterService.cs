@@ -5,8 +5,9 @@
 
     using Dapper;
 
-    using DependencyInjectionExample.Infrastructure.Data;
     using DependencyInjectionExample.Models;
+
+    using Smart.Data;
 
     public class MasterService
     {

@@ -1,24 +1,25 @@
-﻿namespace DependencyInjectionExample.Infrastructure.Resolver
+﻿namespace Smart.Resolver
 {
     using System;
 
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.DependencyInjection;
 
     public class SmartResolverServiceScope : IServiceScope
     {
-        private readonly RequestScopeStorage storage;
+        private readonly IHttpContextAccessor accessor;
 
         public IServiceProvider ServiceProvider { get; }
 
-        public SmartResolverServiceScope(IServiceProvider serviceProvider, RequestScopeStorage storage)
+        public SmartResolverServiceScope(IServiceProvider serviceProvider, IHttpContextAccessor accessor)
         {
             ServiceProvider = serviceProvider;
-            this.storage = storage;
+            this.accessor = accessor;
         }
 
         public void Dispose()
         {
-            storage.Clear();
+            HttpContextStorage.Clear(accessor.HttpContext);
         }
     }
 }

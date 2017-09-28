@@ -1,4 +1,4 @@
-﻿namespace DependencyInjectionExample.Infrastructure.Resolver
+﻿namespace Smart.Resolver
 {
     using System;
     using System.Collections.Generic;
@@ -6,29 +6,17 @@
     using Microsoft.AspNetCore.Http;
 
     using Smart.Resolver.Bindings;
-    using Smart.Resolver.Scopes;
 
-    public class RequestScopeStorage : IScopeStorage
+    public static class HttpContextStorage
     {
         private static readonly string StorageKey = "__RequestScopeStorage";
 
-        private readonly IHttpContextAccessor accessor;
-
-        public RequestScopeStorage(IHttpContextAccessor accessor)
+        public static object GetOrAdd(HttpContext context, IBinding binding, Func<IBinding, object> factory)
         {
-            this.accessor = accessor;
-        }
-
-        public object GetOrAdd(IBinding binding, Func<IBinding, object> factory)
-        {
-            var context = accessor.HttpContext;
-
-            object value;
-            context.Items.TryGetValue(StorageKey, out value);
+            context.Items.TryGetValue(StorageKey, out object value);
             var dictionary = (Dictionary<IBinding, object>)value;
 
-            object instance;
-            if ((dictionary != null) && dictionary.TryGetValue(binding, out instance))
+            if ((dictionary != null) && dictionary.TryGetValue(binding, out object instance))
             {
                 return instance;
             }
@@ -46,12 +34,14 @@
             return instance;
         }
 
-        public void Clear()
+        public static void Clear(HttpContext context)
         {
-            var context = accessor.HttpContext;
+            if (context == null)
+            {
+                return;
+            }
 
-            object value;
-            context.Items.TryGetValue(StorageKey, out value);
+            context.Items.TryGetValue(StorageKey, out object value);
             var dictionary = (Dictionary<IBinding, object>)value;
             if (dictionary == null)
             {

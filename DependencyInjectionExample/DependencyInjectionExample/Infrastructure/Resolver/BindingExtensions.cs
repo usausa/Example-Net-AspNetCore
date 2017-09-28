@@ -1,4 +1,4 @@
-﻿namespace DependencyInjectionExample.Infrastructure.Resolver
+﻿namespace Smart.Resolver
 {
     using Smart.Resolver.Configs;
 

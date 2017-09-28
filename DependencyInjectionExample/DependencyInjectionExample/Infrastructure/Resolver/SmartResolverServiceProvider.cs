@@ -1,12 +1,10 @@
-﻿namespace DependencyInjectionExample.Infrastructure.Resolver
+﻿namespace Smart.Resolver
 {
     using System;
     using System.Collections.Generic;
     using System.Reflection;
 
     using Microsoft.Extensions.DependencyInjection;
-
-    using Smart.Resolver;
 
     public class SmartResolverServiceProvider : IServiceProvider, ISupportRequiredService
     {
@@ -47,8 +45,7 @@
                 return resolver.Get(serviceType);
             }
 
-            bool result;
-            return resolver.TryGet(serviceType, out result);
+            return resolver.TryGet(serviceType, out bool _);
         }
     }
 }
