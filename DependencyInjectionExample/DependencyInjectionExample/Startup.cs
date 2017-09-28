@@ -43,7 +43,7 @@
 
             // Replace activator.
             services.AddSingleton<IControllerActivator, SmartResolverControllerActivator>();
-            //services.AddSingleton<IViewComponentActivator, SmartResolverViewComponentActivator>();
+            services.AddSingleton<IViewComponentActivator, SmartResolverViewComponentActivator>();
 
             // Settings
             ConfigureSettings(services);
